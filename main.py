@@ -1,10 +1,8 @@
 from storage import Storage
 
-from models.HabitTracker import HabitTracker
 from models.HabitStatistics import HabitStatistics
-from models.Habit import Habit
 
-from services import DateService, HabitService, HistoryService
+from services import DateService, HabitService, HistoryService, StartupService
 from services.Collector import Collector
 
 COLLECTOR = Collector()
@@ -13,6 +11,9 @@ def main():
     tracker = Storage().load()
     stats = HabitStatistics(habit_tracker=tracker)
 
+    services = StartupService()
+    services.reset_if_streak_broken(tracker=tracker)
+    
     while True:
         print(f'\n{"=" * 40}')
         print("Habit Tracker".center(40))
