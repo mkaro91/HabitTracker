@@ -4,10 +4,13 @@ DATE_FORMAT = "%Y-%m-%d"
 
 class Habit:
     """ Class that holds Habit information """
-    def __init__(self, id: int, name: str, description: str, target_streak: int | None = None, target_completions: int | None = None):
+    def __init__(self, id: int, name: str, description: str, category: str | None = None, tags: list[str] = [], target_streak: int | None = None, target_completions: int | None = None):
         self.id = id
         self.name = name.title()
         self.description = description
+
+        self.category = category.title()
+        self.tags = tags
 
         self.current_streak: int = 0
         self.max_streak: int = 0
@@ -32,6 +35,8 @@ class Habit:
             id = data['id'],
             name = data['name'],
             description = data['description'],
+            category = data.get('category', None),
+            tags = data.get('tags', []),
             target_streak = data.get('target_streak', None),
             target_completions = data.get('target_completions', None)
         )
@@ -46,6 +51,8 @@ class Habit:
             'id': self.id,
             'name': self.name,
             'description': self.description,
+            'category': self.category,
+            'tags': self.tags,
             'current_streak': self.current_streak,
             'max_streak': self.max_streak,
             'target_streak': self.target_streak,

@@ -38,13 +38,17 @@ class HabitService:
         # Collect Values
         name = self.collector.string_collector.collect_non_blank("\nHabit Name: ")
         description = self.collector.string_collector.collect_non_blank("Habit Description: ")
+        category = self.collector.string_collector.collect_non_blank("Habit Category: ")
+
+        # Collect Tags
+        tags = self.collector.object_collector.collect_list("Habit Tag: ")
 
         # Collect Targets
         target_streak = self.collector.number_collector.collect_number_nullable("Target Streak: ")
         target_completions = self.collector.number_collector.collect_number_nullable("Target Completions: ")
             
         # Create Habit and Save
-        habit = Habit(id=id, name=name, description=description, target_streak=target_streak, target_completions=target_completions)
+        habit = Habit(id=id, name=name, description=description, category=category, tags=tags, target_streak=target_streak, target_completions=target_completions)
         tracker.add_habit(habit=habit)
         Storage().save(tracker=tracker)
 
@@ -71,6 +75,9 @@ class HabitService:
         new_name = input("New Habit Name: ").strip()
         new_description = input("New Habit Description: ")
 
+        new_category = input("New Habit Category: ").strip()
+        new_tags = self.collector.object_collector.collect_list("New Habit Tag: ")
+
         new_target_streak = self.collector.number_collector.collect_number_nullable("New Target Streak: ")
         new_target_completions = self.collector.number_collector.collect_number_nullable("New Target Completions: ")
 
@@ -79,6 +86,11 @@ class HabitService:
             habit.name = new_name.title()
         if new_description:
             habit.description = new_description
+
+        if new_category:
+            habit.category = new_category
+        if new_tags:
+            habit.tags = new_tags
 
         if new_target_streak is not None:
             habit.target_streak = new_target_streak
