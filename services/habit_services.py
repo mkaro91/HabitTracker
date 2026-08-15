@@ -38,8 +38,12 @@ class HabitService:
         name = self.collector.string_collector.collect_non_blank("\nHabit Name: ")
         description = self.collector.string_collector.collect_non_blank("Habit Description: ")
 
+        # Collect Targets
+        target_streak = self.collector.number_collector.collect_number_nullable("Target Streak: ")
+        target_completions = self.collector.number_collector.collect_number_nullable("Target Completions: ")
+            
         # Create Habit and Save
-        habit = Habit(id=id, name=name, description=description)
+        habit = Habit(id=id, name=name, description=description, target_streak=target_streak, target_completions=target_completions)
         tracker.add_habit(habit=habit)
         Storage().save(tracker=tracker)
 
@@ -66,11 +70,19 @@ class HabitService:
         new_name = input("New Habit Name: ").strip()
         new_description = input("New Habit Description: ")
 
+        new_target_streak = self.collector.number_collector.collect_number_nullable("New Target Streak: ")
+        new_target_completions = self.collector.number_collector.collect_number_nullable("New Target Completions: ")
+
         # Set new values if not blank
         if new_name:
             habit.name = new_name.title()
         if new_description:
             habit.description = new_description
+
+        if new_target_streak is not None:
+            habit.target_streak = new_target_streak
+        if new_target_completions is not None:
+            habit.target_completions = new_target_completions
 
         # Save
         Storage().save(tracker=tracker)
@@ -115,3 +127,18 @@ class HabitService:
 
         for habit in habits:
             print(habit)
+
+    def view_habit_goals(self, tracker: HabitTracker):
+        habit_id = self.collector.number_collector.collect_id()
+
+        habit = tracker.get_habit(habit_id=habit_id)
+        if habit is None: 
+            print(f"Habit #{habit_id} was not found.")
+            return
+
+        print(f"\n{habit.name}")
+        print("Target Streak:", 'None' if habit.target_streak is None else f'{habit.target_streak} Days')
+        print("Target Completions:", 'None' if habit.target_completions is None else f'{habit.target_completions} Completions')
+
+        print(f"\nCurrent Streak: {habit.current_streak}")
+        print(f"Completions: {habit.get_completion_count()}")

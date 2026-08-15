@@ -11,3 +11,23 @@ class NumberCollector:
                 return int(input("\nEnter ID: ").strip())
             except ValueError:
                 print("Enter a valid ID.")
+
+    def collect_number_nullable(self, prompt) -> int | None:
+        """
+        Collects a number from user input or None if input is blank
+
+        :param prompt: Prompt to be shown to user
+
+        :return int: Numeric input provided by user
+        :return None: Input provided by user was blank
+        """
+        while True:
+            value = input(prompt).strip()
+
+            if not value:
+                return None
+
+            try:
+                return int(value)
+            except ValueError:
+                print("Enter a valid number.")
