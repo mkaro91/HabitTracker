@@ -13,12 +13,10 @@ def main():
 
     services = StartupService()
     services.reset_if_streak_broken(tracker=tracker)
-    
-    while True:
-        print(f'\n{"=" * 40}')
-        print("Habit Tracker".center(40))
-        print("=" * 40)
 
+    services.daily_dashboard(tracker=tracker, stats=stats)
+    while True:
+        print("\n=== Main Menu ===")
         print("1. Daily Operations")
         print("2. Habit Operations")
         print("3. History Operations")
