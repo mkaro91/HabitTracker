@@ -98,7 +98,7 @@ class Habit:
         :return False: Completion of Habit failed
         """
         if date not in self.completed_dates:
-            self.completed_dates.add(date)
+            self.completed_dates.append(date)
 
             self._increase_streak()
             self._compare_streak_to_max()

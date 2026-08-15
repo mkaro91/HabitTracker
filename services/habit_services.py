@@ -32,7 +32,8 @@ class HabitService:
         """
 
         # Generate ID
-        id = self._generate_habit_id(num_habits=len(tracker.get_all_habits()))
+        num_habits = len(tracker.get_all_habits()) + len(Storage().load_archive())
+        id = self._generate_habit_id(num_habits=num_habits)
 
         # Collect Values
         name = self.collector.string_collector.collect_non_blank("\nHabit Name: ")

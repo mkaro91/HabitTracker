@@ -2,7 +2,7 @@ from storage import Storage
 
 from models.HabitStatistics import HabitStatistics
 
-from services import DateService, HabitService, HistoryService, StartupService
+from services import DateService, HabitService, HistoryService, StartupService, ArchiveService
 from services.Collector import Collector
 
 COLLECTOR = Collector()
@@ -20,6 +20,7 @@ def main():
         print("1. Daily Operations")
         print("2. Habit Operations")
         print("3. History Operations")
+        print("4. Archive Operations")
         print("0. Exit")
 
         choice = COLLECTOR.string_collector.collect_menu_choice()
@@ -100,6 +101,28 @@ def main():
                         case "2": services.view_days_completed(tracker=tracker)
                         case "3": services.view_days_not_completed(tracker=tracker)
                         case "4": services.lookup_date(tracker=tracker)
+
+                        case _: print("Invalid choice.")
+
+            case "4":
+                services = ArchiveService()
+
+                while True:
+                    print("\nArchive Operations".center(40))
+                    print('-' * 40)
+
+                    print("1. View Archived Habits")
+                    print("2. Archive Habit")
+                    print("3. Unarchive Habit")
+                    print("0. Return to Main Menu")
+
+                    choice = COLLECTOR.string_collector.collect_menu_choice()
+                    match choice:
+                        case "0": break
+
+                        case "1": services.view_archived_habits()
+                        case "2": services.archive_habit(tracker=tracker)
+                        case "3": services.unarchive_habit(tracker=tracker)
 
                         case _: print("Invalid choice.")
 

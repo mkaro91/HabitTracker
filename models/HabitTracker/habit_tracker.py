@@ -24,7 +24,7 @@ class HabitTracker:
     # ---------------------------------------------------------------------------- #
     # ---------------------------------- Helpers --------------------------------- #
     # ---------------------------------------------------------------------------- #
-    def _check_id_in_habits(self, habit_id: str) -> bool:
+    def _check_id_in_habits(self, habit_id: int) -> bool:
         """
         Checks if a given ID is found in stored habits
 
@@ -33,7 +33,7 @@ class HabitTracker:
         :return True: Habit ID found in habits
         :return False: Habit ID not found in habits
         """
-        return habit_id in self.habits
+        return str(habit_id) in self.habits
 
 
     # ---------------------------------------------------------------------------- #
@@ -69,7 +69,7 @@ class HabitTracker:
         """
         if not self._check_id_in_habits(habit_id=habit_id):
             return False
-        del self.habits[habit_id]
+        del self.habits[str(habit_id)]
         return True
 
     def get_all_habits(self) -> list[Habit]:
