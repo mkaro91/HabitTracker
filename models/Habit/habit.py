@@ -153,7 +153,11 @@ class Habit:
         """
         days_since_creation = self._calculate_days_since_creation()
         completion_count = self.get_completion_count()
-        completion_rate = completion_count / days_since_creation
+
+        try:
+            completion_rate = completion_count / days_since_creation
+        except ZeroDivisionError:
+            completion_rate = 0
 
         return completion_rate
 

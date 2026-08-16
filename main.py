@@ -2,7 +2,7 @@ from storage import Storage
 
 from models.HabitStatistics import HabitStatistics
 
-from services import DateService, HabitService, HistoryService, StartupService, ArchiveService
+from services import DateService, HabitService, HistoryService, StartupService, ArchiveService, SortingService
 from services.Collector import Collector
 
 COLLECTOR = Collector()
@@ -62,9 +62,8 @@ def main():
                     print('-' * 40)
 
                     print("1. View Habits")
-                    print("2. Add New Habit")
-                    print("3. Edit Habit")
-                    print("4. Delete Habit")
+                    print("2. Habit Actions")
+                    print("3. Sort Habits")
                     print("0. Return to Main Menu")
 
                     choice = COLLECTOR.string_collector.collect_menu_choice()
@@ -73,7 +72,7 @@ def main():
 
                         case "1": 
                             while True:
-                                print("\n View Habits".center(40))
+                                print("\nView Habits".center(40))
                                 print('-' * 40)
 
                                 print("1. View All Habits")
@@ -91,9 +90,49 @@ def main():
 
                                     case _: print("Invalid choice")
 
-                        case "2": services.create_habit(tracker=tracker)
-                        case "3": services.edit_habit(tracker=tracker)
-                        case "4": services.delete_habit(tracker=tracker)
+                        case "2":
+                            while True:
+                                print("\nHabit Actions".center(40))
+                                print('-' * 40)
+
+                                print("1. Add New Habit")
+                                print("2. Edit Habit")
+                                print("3. Delete Habit")
+                                print("0. Return to Habit Operations")
+
+                                choice = COLLECTOR.string_collector.collect_menu_choice()
+                                match choice:
+                                    case "0": break 
+
+                                    case "1": services.create_habit(tracker=tracker)
+                                    case "2": services.edit_habit(tracker=tracker)
+                                    case "3": services.delete_habit(tracker=tracker)
+
+                                    case _: print("Invalid choice.")
+
+                        case "3":
+                            services = SortingService(habits=tracker.get_all_habits())
+
+                            while True:
+                                print("\nSort Habits".center(40))
+                                print('-' * 40)
+
+                                print("1. Sort by Name")
+                                print("2. Sort by Streak")
+                                print("3. Sort by Completion Rate")
+                                print("4. Sort by Creation Date")
+                                print("0. Return to Habit Operations")
+
+                                choice = COLLECTOR.string_collector.collect_menu_choice()
+                                match choice:
+                                    case "0": break
+
+                                    case "1": services.sort_by_name()
+                                    case "2": services.sort_by_streak()
+                                    case "3": services.sort_by_completion_rate()
+                                    case "4": services.sort_by_creation_date()
+
+                                    case _: print("Invalid choice.")
 
                         case _: print("Invalid choice.")
 
