@@ -2,7 +2,7 @@ from storage import Storage
 
 from models.HabitStatistics import HabitStatistics
 
-from services import DateService, HabitService, HistoryService, StartupService, ArchiveService, SortingService
+from services import DateService, HabitService, HistoryService, StartupService, ArchiveService, SortingService, SearchService
 from services.Collector import Collector
 
 COLLECTOR = Collector()
@@ -16,7 +16,8 @@ def main():
 
     services.daily_dashboard(tracker=tracker, stats=stats)
     while True:
-        print("\n=== Main Menu ===")
+        print("\nMain Menu".center(40))
+        print("=" * 40)
         print("1. Daily Operations")
         print("2. Habit Operations")
         print("3. History Operations")
@@ -64,6 +65,7 @@ def main():
                     print("1. View Habits")
                     print("2. Habit Actions")
                     print("3. Sort Habits")
+                    print("4. Search Habits")
                     print("0. Return to Main Menu")
 
                     choice = COLLECTOR.string_collector.collect_menu_choice()
@@ -131,6 +133,28 @@ def main():
                                     case "2": services.sort_by_streak()
                                     case "3": services.sort_by_completion_rate()
                                     case "4": services.sort_by_creation_date()
+
+                                    case _: print("Invalid choice.")
+
+                        case "4":
+                            services = SearchService(habits=tracker.get_all_habits())
+
+                            while True:
+                                print("\nSearch Habits".center(40))
+                                print('-' * 40)
+
+                                print("1. Search in Name")
+                                print("2. Search in Description")
+                                print("3. Search in Category")
+                                print("0. Return to Habit Operations")
+
+                                choice = COLLECTOR.string_collector.collect_menu_choice()
+                                match choice:
+                                    case "0": break
+
+                                    case "1": services.search_in_name()
+                                    case "2": services.search_in_description()
+                                    case "3": services.search_in_category()
 
                                     case _: print("Invalid choice.")
 
