@@ -61,24 +61,39 @@ def main():
                     print("\nHabit Operations".center(40))
                     print('-' * 40)
 
-                    print("1. View All Habits")
-                    print("2. View Habit Goals")
-                    print("3. View Habit Achievements")
-                    print("4. Add New Habit")
-                    print("5. Edit Habit")
-                    print("6. Delete Habit")
+                    print("1. View Habits")
+                    print("2. Add New Habit")
+                    print("3. Edit Habit")
+                    print("4. Delete Habit")
                     print("0. Return to Main Menu")
 
                     choice = COLLECTOR.string_collector.collect_menu_choice()
                     match choice:
                         case "0": break
 
-                        case "1": services.view_all_habits(tracker=tracker)
-                        case "2": services.view_habit_goals(tracker=tracker)
-                        case "3": services.view_habit_achievements(tracker=tracker)
-                        case "4": services.create_habit(tracker=tracker)
-                        case "5": services.edit_habit(tracker=tracker)
-                        case "6": services.delete_habit(tracker=tracker)
+                        case "1": 
+                            while True:
+                                print("\n View Habits".center(40))
+                                print('-' * 40)
+
+                                print("1. View All Habits")
+                                print("2. View Habit Goals")
+                                print("3. View Habit Achievements")
+                                print("0. Return to Habit Operartions")
+
+                                choice = COLLECTOR.string_collector.collect_menu_choice()
+                                match choice:
+                                    case "0": break
+
+                                    case "1": services.view_all_habits(tracker=tracker)
+                                    case "2": services.view_habit_goals(tracker=tracker)
+                                    case "3": services.view_habit_achievements(tracker=tracker)
+
+                                    case _: print("Invalid choice")
+
+                        case "2": services.create_habit(tracker=tracker)
+                        case "3": services.edit_habit(tracker=tracker)
+                        case "4": services.delete_habit(tracker=tracker)
 
                         case _: print("Invalid choice.")
 
