@@ -19,36 +19,54 @@ class HabitStatistics:
         :return datetime: Today's date in required format
         """
         format = "%Y-%m-%d"
-        return datetime.strptime(datetime.now().strftime(format), format)
+        today = datetime.strptime(datetime.now().strftime(format), format)
+
+        return today
+
+    # ---------------------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------- #
 
 
     # ---------------------------------------------------------------------------- #
     # ---------------------------------- Methods --------------------------------- #
     # ---------------------------------------------------------------------------- #
+    
+    # ----------------------------- Get Total Habits ----------------------------- #
     def get_total_habits(self) -> int:
         """
         Total number habits found in storage
 
         :return int: Number Habits found in storage
         """
-        return len(self.habit_tracker.habits)
+        number_of_habits = len(self.habit_tracker.habits)
 
+        return number_of_habits
+
+    # ---------------------------- Get Completed Today --------------------------- #
     def get_completed_today(self) -> list[Habit]:
         """
         Returns list of Habits that have been completed today
 
         :return list[Habit]: List of Habits that have been completed today
         """
-        return self.habit_tracker.get_completed_habits(date=self._get_today())
+        today = self._get_today()
+        completed_habits = self.habit_tracker.get_completed_habits(date=today)
 
+        return completed_habits
+
+    # --------------------------- Get Incomplete Today --------------------------- #
     def get_incomplete_today(self) -> list[Habit]:
         """
         Returns list of Habits that have not been completed today
 
         :return list[Habit]: List of Habits that have not been completed today
         """
-        return self.habit_tracker.get_incomplete_habits(date=self._get_today())
+        today = self._get_today()
+        incomplete_habits = self.habit_tracker.get_incomplete_habits(date=today)
 
+        return incomplete_habits
+
+    # ------------------------ Get Overall Completion Rate ----------------------- #
     def get_overall_completion_rate(self) -> float:
         """
         Returns the overall completion rate of all Habits
@@ -56,20 +74,39 @@ class HabitStatistics:
         :return float: Average completion rate
         """
         total_completions = sum(habit.get_completion_count() for habit in self.habit_tracker.get_all_habits())
-        return total_completions / len(self.habit_tracker.get_all_habits())
+        completion_rate = total_completions / len(self.habit_tracker.get_all_habits())
 
-    def get_best_max_streak(self) -> Habit:
+        return completion_rate
+
+    # ---------------------------- Get Best Max Streak --------------------------- #
+    def get_best_max_streak(self) -> Habit | None:
         """
         Returns the highest max streak found in Habits
 
         :return Habit: Habit with the highest max streak attribute
         """
-        return max(self.habit_tracker.get_all_habits(), key=lambda x: x.max_streak)
+        habits = self.habit_tracker.get_all_habits()
 
-    def get_most_consistent_habit(self) -> Habit:
+        if not habits:
+            return None
+        
+        best_max_streak_habit = max(habits, key=lambda x: x.get_max_streak())
+        return best_max_streak_habit
+
+    # ------------------------- Get Most Consistent Habit ------------------------ #
+    def get_most_consistent_habit(self) -> Habit | None:
         """
         Returns the habit with the highest current streak attribute
 
         :return Habit: Habit with the highest current streak attribute
         """
-        return max(self.habit_tracker.get_all_habits(), key=lambda x: x.current_streak)
+        habits = self.habit_tracker.get_all_habits()
+
+        if not habits:
+            return None
+        
+        most_consistent_habit = max(habits, key=lambda x: x.get_streak())
+        return most_consistent_habit
+
+    # ---------------------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------- #

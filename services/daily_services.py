@@ -10,6 +10,7 @@ from storage import Storage
 class DateService:
     def __init__(self):
         self.collector = Collector()
+        self.storage = Storage()
 
     # ---------------------------------------------------------------------------- #
     # ---------------------------------- Helpers --------------------------------- #
@@ -24,8 +25,14 @@ class DateService:
         return datetime.strptime(datetime.now().strftime(format), format)
 
     # ---------------------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------- #
+
+
+    # ---------------------------------------------------------------------------- #
     # ---------------------------------- Methods --------------------------------- #
     # ---------------------------------------------------------------------------- #
+
+    # ------------------------------ Complete Habit ------------------------------ #
     def complete_habit(self, tracker: HabitTracker) -> None:
         """
         Collects ID and date from user and completes a Habit for the given date
@@ -35,6 +42,7 @@ class DateService:
 
         # Collect values
         habit_id = self.collector.number_collector.collect_id()
+
         date = self.collector.date_collector.collect_date()
         if not date:
             date = self._convert_now()
@@ -44,11 +52,11 @@ class DateService:
 
         if result:
             print(f"\nSuccessfully completed Habit #{habit_id}.")
-            Storage().save(tracker=tracker)
+            self.storage.save(tracker=tracker)
         else:
             print(f"\nFailed to completed Habit #{habit_id}.")
 
-
+    # ----------------------------- Uncomplete Habit ----------------------------- #
     def uncomplete_habit(self, tracker: HabitTracker) -> None:
         """
         Collects ID and date from user and uncompletes a Habit if completed on given date
@@ -58,6 +66,7 @@ class DateService:
 
         # Collect values
         habit_id = self.collector.number_collector.collect_id()
+
         date = self.collector.date_collector.collect_date()
         if not date:
             date = self._convert_now()
@@ -67,11 +76,11 @@ class DateService:
 
         if result:
             print(f"\nSuccessfully uncompleted Habit #{habit_id}.")
-            Storage().save(tracker=tracker)
+            self.storage.save(tracker=tracker)
         else:
             print(f"\nFailed to uncomplete Habit #{habit_id}.")
 
-
+    # ------------------------- Is Habit Completed Today ------------------------- #
     def is_habit_completed_today(self, tracker: HabitTracker) -> None:
         """
         Collects ID from user and checks if coresponding Habit is completed today
@@ -84,6 +93,7 @@ class DateService:
 
         # Find Habit or Exit
         habit = tracker.get_habit(habit_id=habit_id)
+
         if habit is None:
             print(f"\nHabit #{habit_id} not found.")
             return False
@@ -96,7 +106,7 @@ class DateService:
         else:
             print(f"\nHabit #{habit_id} is incomplete.")
 
-
+    # ------------------------ View Habits Completed Today ----------------------- #
     def view_habits_completed_today(self, stats: HabitStatistics) -> None:
         """
         Returns a list of Habits that have been completed today
@@ -114,6 +124,7 @@ class DateService:
         for habit in completed_today:
             print(habit)
 
+    # ----------------------- View Habits Incomplete Today ----------------------- #
     def view_habits_incomplete_today(self, stats: HabitStatistics) -> None:
         """
         Returns a list of Habits that are not completed today
@@ -130,3 +141,6 @@ class DateService:
 
         for habit in incomplete:
             print(habit)
+
+    # ---------------------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------- #

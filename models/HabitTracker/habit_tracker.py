@@ -20,6 +20,9 @@ class HabitTracker:
             'habits': {k: v.to_dict() for k, v in self.habits.items()}
         }
 
+    # ---------------------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------- #
+
 
     # ---------------------------------------------------------------------------- #
     # ---------------------------------- Helpers --------------------------------- #
@@ -35,10 +38,32 @@ class HabitTracker:
         """
         return str(habit_id) in self.habits
 
+    def _earn_achievement(self, habit: Habit, func) -> None:
+        """
+        Allows for achievement to be earned
+
+        :param habit: Habit which is earning achievement
+        :param func: Function to run to check for ahievement earning
+        """
+        achievement_earned = func()
+
+        if achievement_earned:
+            achievement = habit.get_latest_achievement()
+
+            print("\nAchievement Earned!")
+            print(achievement)
+
+    # ---------------------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------- #
 
     # ---------------------------------------------------------------------------- #
     # ---------------------------------- Methods --------------------------------- #
     # ---------------------------------------------------------------------------- #
+
+    # ------------------------------- Habit Actions ------------------------------ #
+    # ---------------------------------------------------------------------------- #
+
+    # --------------------------------- Get Habit -------------------------------- #
     def get_habit(self, habit_id: int) -> Habit | None:
         """
         Searches Habits and returns Habit with matching ID if found
@@ -48,8 +73,22 @@ class HabitTracker:
         :return Habit: Habit with matching ID
         :return None: No Habit with matching ID found
         """
-        return self.habits.get(str(habit_id), None)
+        habit = self.habits.get(str(habit_id), None)
 
+        return habit
+
+    # ------------------------------ Get All Habits ------------------------------ #
+    def get_all_habits(self) -> list[Habit]:
+        """
+        Returns a list of all Habits found in storage
+
+        :return list[Habit]: List of Habits found in storage
+        """
+        habits = list(self.habits.values())
+
+        return habits
+    
+    # --------------------------------- Add Habit -------------------------------- #
     def add_habit(self, habit: Habit) -> None:
         """
         Adds a Habit to stored habits
@@ -58,6 +97,7 @@ class HabitTracker:
         """
         self.habits[habit.id] = habit
 
+    # ------------------------------- Remove Habit ------------------------------- #
     def remove_habit(self, habit_id: str) -> bool:
         """
         Removes a Habit from storage if Habit is found in storage
@@ -69,17 +109,15 @@ class HabitTracker:
         """
         if not self._check_id_in_habits(habit_id=habit_id):
             return False
+        
         del self.habits[str(habit_id)]
         return True
 
-    def get_all_habits(self) -> list[Habit]:
-        """
-        Returns a list of all Habits found in storage
 
-        :return list[Habit]: List of Habits found in storage
-        """
-        return list(self.habits.values())
+    # ------------------------ Completions & Uncompletions ----------------------- #
+    # ---------------------------------------------------------------------------- #
 
+    # ------------------------------ Complete Habit ------------------------------ #
     def complete_habit(self, habit_id: str, date: datetime) -> bool:
         """
         Complete a habit if found in storage
@@ -93,8 +131,17 @@ class HabitTracker:
         habit = self.get_habit(habit_id=habit_id)
         if habit is None:
             return False
-        return habit.complete(date=date)
 
+        result = habit.complete(date=date)
+
+        if result:
+            self._earn_achievement(habit=habit, func=habit.check_for_streak_achievement)
+            self._earn_achievement(habit=habit, func=habit.check_for_completion_achievement)
+            return True
+
+        return False
+
+    # ----------------------------- Uncomplete Habit ----------------------------- #
     def uncomplete_habit(self, habit_id: str, date: datetime) -> bool:
         """
         Uncomplete a Habit if found in storage
@@ -108,8 +155,10 @@ class HabitTracker:
         habit = self.get_habit(habit_id=habit_id)
         if habit is None:
             return False
+
         return habit.uncomplete(date=date)
 
+    # --------------------------- Get Completed Habits --------------------------- #
     def get_completed_habits(self, date: datetime) -> list[Habit]:
         """
         Return a list of habits that were completed on a given date
@@ -118,8 +167,11 @@ class HabitTracker:
 
         :return list[Habit]: List of completed Habits
         """
-        return [habit for habit in self.get_all_habits() if date in habit.completed_dates]
+        completed_habits = [habit for habit in self.get_all_habits() if date in habit.completed_dates]
 
+        return completed_habits
+
+    # --------------------------- Get Incomplete Habits -------------------------- #
     def get_incomplete_habits(self, date: datetime) -> list[Habit]:
         """
         Returns a list of habits that were incomplete on a given date
@@ -128,4 +180,9 @@ class HabitTracker:
         
         :return list[Habit]: List of incompleted Habits
         """
-        return [habit for habit in self.get_all_habits() if date not in habit.completed_dates]
+        incomplete_habits = [habit for habit in self.get_all_habits() if date not in habit.completed_dates]
+
+        return incomplete_habits
+
+    # ---------------------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------- #

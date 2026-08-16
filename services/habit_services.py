@@ -8,6 +8,7 @@ from storage import Storage
 class HabitService:
     def __init__(self):
         self.collector = Collector()
+        self.storage = Storage()
 
     # ---------------------------------------------------------------------------- #
     # ---------------------------------- Helpers --------------------------------- #
@@ -18,12 +19,19 @@ class HabitService:
 
         :return int: ID
         """
-        return num_habits + 1
+        id = num_habits + 1
+
+        return id
+
+    # ---------------------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------- #
 
 
     # ---------------------------------------------------------------------------- #
     # ---------------------------------- Methods --------------------------------- #
     # ---------------------------------------------------------------------------- #
+
+    # ------------------------------- Create Habit ------------------------------- #
     def create_habit(self, tracker: HabitTracker) -> None:
         """
         Adds a Habit object to Storage
@@ -50,11 +58,12 @@ class HabitService:
         # Create Habit and Save
         habit = Habit(id=id, name=name, description=description, category=category, tags=tags, target_streak=target_streak, target_completions=target_completions)
         tracker.add_habit(habit=habit)
-        Storage().save(tracker=tracker)
+        self.storage.save(tracker=tracker)
 
         print(f"\nHabit #{habit.id} was created successfully.")
 
 
+    # -------------------------------- Edit Habit -------------------------------- #
     def edit_habit(self, tracker: HabitTracker) -> None:
         """
         Edits a Habit's values
@@ -93,15 +102,16 @@ class HabitService:
             habit.tags = new_tags
 
         if new_target_streak is not None:
-            habit.target_streak = new_target_streak
+            habit.targets.target_streak = new_target_streak
         if new_target_completions is not None:
-            habit.target_completions = new_target_completions
+            habit.targets.target_completions = new_target_completions
 
         # Save
-        Storage().save(tracker=tracker)
+        self.storage.save(tracker=tracker)
         print(f"\nSuccessfully updated Habit #{habit_id}.")
 
 
+    # ------------------------------- Delete Habit ------------------------------- #
     def delete_habit(self, tracker: HabitTracker) -> None:
         """
         Removes a Habit object from Storage
@@ -114,7 +124,7 @@ class HabitService:
 
         # Record result and save
         result = tracker.remove_habit(habit_id=habit_id)
-        Storage().save(tracker=tracker)
+        self.storage.save(tracker=tracker)
 
         if result:
             print(f"\nSuccessfully deleted Habit #{habit_id}.")
@@ -122,6 +132,7 @@ class HabitService:
             print(f"Failed to delete Habit #{habit_id}.")
 
 
+    # ------------------------------ View All Habits ----------------------------- #
     def view_all_habits(self, tracker: HabitTracker) -> None:
         """
         View all stored Habits
@@ -141,17 +152,68 @@ class HabitService:
         for habit in habits:
             print(habit)
 
-    def view_habit_goals(self, tracker: HabitTracker):
+    # ----------------------------- View Habit Goals ----------------------------- #
+    def view_habit_goals(self, tracker: HabitTracker) -> None:
+        """
+        View target goals set for a specific Habit
+
+        :param tracker: Habit Tracker containing target Habit
+        """
+
+        # Get Habit ID
         habit_id = self.collector.number_collector.collect_id()
 
+        # Find Habit or Exit
         habit = tracker.get_habit(habit_id=habit_id)
         if habit is None: 
             print(f"Habit #{habit_id} was not found.")
             return
 
-        print(f"\n{habit.name}")
-        print("Target Streak:", 'None' if habit.target_streak is None else f'{habit.target_streak} Days')
-        print("Target Completions:", 'None' if habit.target_completions is None else f'{habit.target_completions} Completions')
+        # Display Target Information
+        target_streak = habit.get_target_streak()
+        target_completions = habit.get_target_completions()
 
-        print(f"\nCurrent Streak: {habit.current_streak}")
-        print(f"Completions: {habit.get_completion_count()}")
+        print(f"\n{habit.name}")
+        print("Target Streak:", 'None' if target_streak is None else f'{target_streak} Days')
+        print("Target Completions:", 'None' if target_completions is None else f'{target_completions} Completions')
+
+        # Display Current Values Information
+        current_streak = habit.get_streak()
+        current_completions = habit.get_completion_count()
+
+        print(f"\nCurrent Streak: {current_streak}")
+        print(f"Completions: {current_completions}")
+
+
+    # -------------------------- View Habit Achievements ------------------------- #
+    def view_habit_achievements(self, tracker: HabitTracker) -> None:
+        """
+        View achievements earned for a specific habit
+
+        :param tracker: Habit Tracker containing the target habit 
+        """
+
+        # Get Habit ID
+        habit_id = self.collector.number_collector.collect_id()
+
+        # Find Habit or Exit
+        habit = tracker.get_habit(habit_id=habit_id)
+        if habit is None:
+            print(f"Habit #{habit_id} was not found.")
+            return
+
+        # Get Achievements from Habit
+        achievements = habit.get_achievements()
+
+        # Display Information
+        print(f"\n=== Habit #{habit_id} Achievements ===")
+
+        if not achievements:
+            print("No achievements unlocked yet.")
+            return
+
+        for achievement in achievements:
+            print(achievement)
+
+    # ---------------------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------- #
