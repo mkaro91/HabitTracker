@@ -5,3 +5,4 @@ from .history_services import HistoryService
 from .startup_services import StartupService
 from .sorting_services import SortingService
 from .search_services import SearchService
+from .template_services import TemplateService

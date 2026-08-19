@@ -75,7 +75,7 @@ class HabitService:
         habit_id = self.collector.number_collector.collect_id()
 
         # Find Habit or Exit
-        habit = tracker.get_habit(hait_id=habit_id)
+        habit = tracker.get_habit(habit_id=habit_id)
         if habit is None:
             print(f"\nHabit #{habit_id} not found.")
             return
@@ -124,9 +124,9 @@ class HabitService:
 
         # Record result and save
         result = tracker.remove_habit(habit_id=habit_id)
-        self.storage.save(tracker=tracker)
-
+        
         if result:
+            self.storage.save(tracker=tracker)
             print(f"\nSuccessfully deleted Habit #{habit_id}.")
         else:
             print(f"Failed to delete Habit #{habit_id}.")

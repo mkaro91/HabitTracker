@@ -2,7 +2,7 @@ from storage import Storage
 
 from models.HabitStatistics import HabitStatistics
 
-from services import DateService, HabitService, HistoryService, StartupService, ArchiveService, SortingService, SearchService
+from services import DateService, HabitService, HistoryService, StartupService, ArchiveService, SortingService, SearchService, TemplateService
 from services.Collector import Collector
 
 COLLECTOR = Collector()
@@ -106,7 +106,109 @@ def main():
                                 match choice:
                                     case "0": break 
 
-                                    case "1": services.create_habit(tracker=tracker)
+                                    case "1": 
+                                        print("\nAdd New Habit")
+                                        print("-" * 40)
+
+                                        print("1. Use Template")
+                                        print("2. Create Custom")
+                                        print("0. Cancel")
+
+                                        choice = COLLECTOR.string_collector.collect_menu_choice()
+                                        match choice:
+                                            case "0": pass
+
+                                            case "1":
+                                                templates =  TemplateService(tracker=tracker)
+
+                                                print("\nHabit Templates")
+                                                print("-" * 40)
+
+                                                print("1. Health Habits")
+                                                print("2. Productivity Habits")
+                                                print("3. Learning Habits")
+                                                print("4. Personal Habits")
+                                                print("0. Cancel")
+
+                                                choice = COLLECTOR.string_collector.collect_menu_choice()
+                                                match choice:
+                                                    case "0": pass
+
+                                                    case "1":
+                                                        print("\nHealth Habits")
+                                                        print('-' * 40)
+
+                                                        print("1. Exercise")
+                                                        print("2. Drink Water")
+                                                        print("0. Cancel")
+
+                                                        choice = COLLECTOR.string_collector.collect_menu_choice()
+                                                        match choice:
+                                                            case "0": pass
+
+                                                            case "1": templates.exercise_template()
+                                                            case "2": templates.drink_water_template()
+
+                                                            case _: print("Invalid choice.")
+
+                                                    case "2":
+                                                        print("\nProductivity Habits")
+                                                        print('-' * 40)
+
+                                                        print("1. Check Email")
+                                                        print("2. Limit Social Media")
+                                                        print("0. Cancel")
+
+                                                        choice = COLLECTOR.string_collector.collect_menu_choice()
+                                                        match choice:
+                                                            case "0": pass
+
+                                                            case "1": templates.check_email_template()
+                                                            case "2": templates.limit_social_media_template()
+
+                                                            case _: print("Invalid choice.")
+
+                                                    case "3": 
+                                                        print("\nLearning Habits")
+                                                        print("-" * 40)
+
+                                                        print("1. Read")
+                                                        print("2. Learn New Language")
+                                                        print("0. Cancel")
+
+                                                        choice = COLLECTOR.string_collector.collect_menu_choice()
+                                                        match choice:
+                                                            case "0": pass
+
+                                                            case "1": templates.read_template()
+                                                            case "2": templates.learn_language_template()
+
+                                                            case _: print("Invalid choice.")
+
+                                                    case "4":
+                                                        print("\nPersonal Habits")
+                                                        print("-" * 40)
+
+                                                        print("1. Make Bed") 
+                                                        print("2. Journal")
+                                                        print("0. Cancel")
+
+                                                        choice = COLLECTOR.string_collector.collect_menu_choice()
+                                                        match choice:
+                                                            case "0": pass
+
+                                                            case "1": templates.make_bed_template()
+                                                            case "2": templates.journal_template()
+
+                                                            case _: print("Invalid choice.")
+
+                                                    case _: print("Invalid choice.")
+
+
+                                            case "2": services.create_habit(tracker=tracker)
+
+                                            case _: print("Invalid choice.")
+
                                     case "2": services.edit_habit(tracker=tracker)
                                     case "3": services.delete_habit(tracker=tracker)
 

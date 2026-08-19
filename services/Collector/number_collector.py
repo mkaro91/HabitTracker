@@ -31,3 +31,14 @@ class NumberCollector:
                 return int(value)
             except ValueError:
                 print("Enter a valid number.")
+
+    def collect_number(self, prompt, is_int=True):
+        number_type = int if is_int else float
+
+        while True:
+            value = input(prompt).strip()
+
+            try:
+                return number_type(value)
+            except ValueError:
+                print("Enter a valid number.")
